@@ -21,9 +21,45 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
   policy     = var.lifecycle_policy
 }
 
+resource "null_resource" "replicate_lifecycle_policy" {
+  count = length(var.lifecycle_policy) > 0 ? length(var.replicated_region) : 0
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/replicate-lifecycle-policy.sh"
+    environment = {
+      CURRENT_REGION = data.aws_region.current.name
+      REPOSITORY = var.name
+      REGION     = var.replicated_region[count.index]
+    }
+  }
+
+  depends_on = [
+    aws_ecr_repository.repository,
+    aws_ecr_lifecycle_policy.lifecycle_policy
+  ]
+}
+
 resource "aws_ecr_repository_policy" "repository_policy" {
   count = length(var.repository_policy) > 0 ? 1 : 0
 
   repository = aws_ecr_repository.repository.name
   policy     = var.repository_policy
+}
+
+resource "null_resource" "replicate_repository_policy" {
+  count = length(var.repository_policy) > 0 ? length(var.replicated_region) : 0
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/replicate-repository-policy.sh"
+    environment = {
+      CURRENT_REGION = data.aws_region.current.name
+      REPOSITORY = var.name
+      REGION     = var.replicated_region[count.index]
+    }
+  }
+
+  depends_on = [
+    aws_ecr_repository.repository,
+    aws_ecr_repository_policy.repository_policy
+  ]
 }

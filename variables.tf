@@ -20,18 +20,6 @@ variable "image_tag_mutability" {
   default     = false
 }
 
-variable "scan_on_push" {
-  type        = bool
-  description = "Indicates whether images are scanned after being pushed to the repository."
-  default     = true
-}
-
-variable "tags" {
-  description = "map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
-  type        = map(string)
-  default     = {}
-}
-
 variable "kms_key" {
   type        = string
   description = "ARN of the KMS key to use when encryption_type is KMS. If not specified, uses the default AWS managed key for ECR."
@@ -44,8 +32,26 @@ variable "lifecycle_policy" {
   default     = ""
 }
 
+variable "replicated_region" {
+  type        = list(string)
+  description = "List of region in wich the repository is replicated."
+  default     = []
+}
+
 variable "repository_policy" {
   type        = string
   description = "Policy document. This is a JSON formatted string. For more information about building IAM policy documents with Terraform, see the [AWS IAM Policy Document Guide](https://learn.hashicorp.com/terraform/aws/iam-policy)."
   default     = ""
+}
+
+variable "scan_on_push" {
+  type        = bool
+  description = "Indicates whether images are scanned after being pushed to the repository."
+  default     = true
+}
+
+variable "tags" {
+  description = "map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  type        = map(string)
+  default     = {}
 }

@@ -41,11 +41,11 @@ variable "kms_key" {
 variable "lifecycle_policy" {
   type        = string
   description = "Policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs."
-  default     = null
+  default     = ""
 }
 
 variable "repository_policy" {
   type        = string
   description = "Policy document. This is a JSON formatted string. For more information about building IAM policy documents with Terraform, see the [AWS IAM Policy Document Guide](https://learn.hashicorp.com/terraform/aws/iam-policy)."
-  default     = null
+  default     = ""
 }

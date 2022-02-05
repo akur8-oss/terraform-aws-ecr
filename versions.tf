@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    github = {
+    aws = {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }

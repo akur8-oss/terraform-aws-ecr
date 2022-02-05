@@ -15,14 +15,14 @@ resource "aws_ecr_repository" "repository" {
 }
 
 resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
-  count = var.lifecycle_policy ? 1 : 0
+  count = length(var.lifecycle_policy) > 0 ? 1 : 0
 
   repository = aws_ecr_repository.repository.name
   policy     = var.lifecycle_policy
 }
 
 resource "aws_ecr_repository_policy" "repository_policy" {
-  count = var.repository_policy ? 1 : 0
+  count = length(var.repository_policy) > 0 ? 1 : 0
 
   repository = aws_ecr_repository.repository.name
   policy     = var.repository_policy

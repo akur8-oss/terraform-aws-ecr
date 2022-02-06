@@ -28,8 +28,8 @@ resource "null_resource" "replicate_lifecycle_policy" {
     command = "${path.module}/scripts/replicate-lifecycle-policy.sh"
     environment = {
       CURRENT_REGION = data.aws_region.current.name
-      REPOSITORY = var.name
-      REGION     = var.replicated_region[count.index]
+      REPOSITORY     = var.name
+      REGION         = var.replicated_region[count.index]
     }
   }
 
@@ -37,6 +37,10 @@ resource "null_resource" "replicate_lifecycle_policy" {
     aws_ecr_repository.repository,
     aws_ecr_lifecycle_policy.lifecycle_policy
   ]
+
+  triggers = {
+    policy_hash = sha256(var.lifecycle_policy)
+  }
 }
 
 resource "aws_ecr_repository_policy" "repository_policy" {
@@ -53,8 +57,8 @@ resource "null_resource" "replicate_repository_policy" {
     command = "${path.module}/scripts/replicate-repository-policy.sh"
     environment = {
       CURRENT_REGION = data.aws_region.current.name
-      REPOSITORY = var.name
-      REGION     = var.replicated_region[count.index]
+      REPOSITORY     = var.name
+      REGION         = var.replicated_region[count.index]
     }
   }
 
@@ -62,4 +66,8 @@ resource "null_resource" "replicate_repository_policy" {
     aws_ecr_repository.repository,
     aws_ecr_repository_policy.repository_policy
   ]
+
+  triggers = {
+    policy_hash = sha256(var.repository_policy)
+  }
 }

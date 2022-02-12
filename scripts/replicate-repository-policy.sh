@@ -6,13 +6,14 @@ printf "%s/%s - Retrieve repository policy from source repository.\n" "${REPOSIT
 aws ecr \
   get-repository-policy \
   --repository-name "${REPOSITORY}" \
+  --region "${CURRENT_REGION}" \
   > "${repository_policy}"
 
 {
   aws ecr \
     describe-repositories \
     --repository-names "${REPOSITORY}" \
-    --region "${CURRENT_REGION}" \
+    --region "${REGION}" \
     > /dev/null 2>&1
   printf "%s/%s - Repository exist in region.\n" "${REPOSITORY}" "${REGION}"
   printf "%s/%s - Applying repository policy.\n" "${REPOSITORY}" "${REGION}"

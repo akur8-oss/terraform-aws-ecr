@@ -7,6 +7,7 @@ printf "%s/%s - Retrieve lifecycle policy from source repository.\n" "${REPOSITO
 aws ecr \
   get-lifecycle-policy \
   --repository-name "${REPOSITORY}" \
+  --region "${CURRENT_REGION}" \
   | jq 'del(.lastEvaluatedAt)' \
   > "${lifecycle_policy}"
 
@@ -14,7 +15,7 @@ aws ecr \
   aws ecr \
     describe-repositories \
     --repository-names "${REPOSITORY}" \
-    --region "${CURRENT_REGION}" \
+    --region "${REGION}" \
     > /dev/null 2>&1
   printf "%s/%s - Repository exist in region.\n" "${REPOSITORY}" "${REGION}"
   printf "%s/%s - Applying lifecycle policy.\n" "${REPOSITORY}" "${REGION}"

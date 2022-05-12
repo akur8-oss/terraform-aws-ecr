@@ -7,9 +7,9 @@ printf "%s/%s - Retrieve lifecycle policy from source repository.\n" "${REPOSITO
 aws ecr \
   get-lifecycle-policy \
   --repository-name "${REPOSITORY}" \
-  --region "${CURRENT_REGION}" |
-  jq 'del(.lastEvaluatedAt)' \
-  >"${lifecycle_policy}"
+  --region "${CURRENT_REGION}" \
+  | jq 'del(.lastEvaluatedAt)' \
+  > "${lifecycle_policy}"
 
 should_be_replicated=$(aws ecr list-images --repository-name "${REPOSITORY}" --region "${CURRENT_REGION}" | jq -r ".imageIds | length")
 
@@ -27,7 +27,7 @@ if [ "${should_be_replicated}" -gt 1 ]; then
     --region "${REGION}" \
     --cli-input-json "file://${lifecycle_policy}" \
     >/dev/null 2>&1
-   printf "%s/%s - Policy applied.\n" "${REPOSITORY}" "${REGION}"
+  printf "%s/%s - Policy applied.\n" "${REPOSITORY}" "${REGION}"
 else
   printf "%s/%s - Repository is empty in %s and not replicated. Skipping.\n" "${REPOSITORY}" "${REGION}" "${CURRENT_REGION}"
 fi

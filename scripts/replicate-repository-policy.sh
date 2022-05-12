@@ -9,15 +9,16 @@ aws ecr \
   --region "${CURRENT_REGION}" \
   > "${repository_policy}"
 
-{
+should_be_replicated=$(aws ecr list-images --repository-name "${REPOSITORY}" --region "${CURRENT_REGION}" | jq -r ".imageIds | length")
+
+if [ "${should_be_replicated}" -gt 1 ]; then
   aws ecr \
     describe-repositories \
     --repository-names "${REPOSITORY}" \
     --region "${REGION}" \
     > /dev/null 2>&1
-  printf "%s/%s - Repository exist in region.\n" "${REPOSITORY}" "${REGION}"
+  printf "%s/%s - Repository exists in region.\n" "${REPOSITORY}" "${REGION}"
   printf "%s/%s - Applying repository policy.\n" "${REPOSITORY}" "${REGION}"
-} && {
   aws ecr \
     set-repository-policy \
     --repository-name "${REPOSITORY}" \
@@ -25,6 +26,8 @@ aws ecr \
     --cli-input-json "file://${repository_policy}" \
     > /dev/null 2>&1
   printf "%s/%s - Policy applied.\n" "${REPOSITORY}" "${REGION}"
-}
+else
+  printf "%s/%s - Repository is empty and not replicated. Skipping.\n" "${REPOSITORY}" "${REGION}"
+fi
 
 rm -f "${repository_policy}"

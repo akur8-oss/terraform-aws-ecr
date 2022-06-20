@@ -13,7 +13,7 @@ aws ecr \
 
 should_be_replicated=$(aws ecr list-images --repository-name "${REPOSITORY}" --region "${CURRENT_REGION}" | jq -r ".imageIds | length")
 
-if [ "${should_be_replicated}" -gt 1 ]; then
+if [ "${should_be_replicated}" -gt 0 ]; then
   aws ecr \
     describe-repositories \
     --repository-names "${REPOSITORY}" \

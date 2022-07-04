@@ -1,8 +1,22 @@
 #!/bin/bash -e
 
+# shellcheck disable=SC2046,SC2183
+assume_role() {
+  if [[ -n "${ROLE_TO_ASSUME}" ]]; then
+  export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+    $(aws sts assume-role \
+    --role-arn "${ROLE_TO_ASSUME}" \
+    --role-session-name "terraform-aws-ecr" \
+    --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+    --output text))
+  fi
+}
+
 lifecycle_policy=$(mktemp)
 
 printf "%s/%s - Retrieve lifecycle policy from source repository.\n" "${REPOSITORY}" "${CURRENT_REGION}"
+
+assume_role
 
 aws ecr \
   get-lifecycle-policy \
@@ -13,7 +27,7 @@ aws ecr \
 
 should_be_replicated=$(aws ecr list-images --repository-name "${REPOSITORY}" --region "${CURRENT_REGION}" | jq -r ".imageIds | length")
 
-if [ "${should_be_replicated}" -gt 1 ]; then
+if [ "${should_be_replicated}" -gt 0 ]; then
   aws ecr \
     describe-repositories \
     --repository-names "${REPOSITORY}" \

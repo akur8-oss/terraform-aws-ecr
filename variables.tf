@@ -55,3 +55,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "role_to_assume" {
+  description = "The ARN of the role to assume when replicating repositories."
+  type        = string
+  default     = null
+}

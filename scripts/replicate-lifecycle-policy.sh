@@ -9,7 +9,7 @@ assume_role() {
     --role-session-name "terraform-aws-ecr" \
     --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
     --output text))
-    fi
+  fi
 }
 
 lifecycle_policy=$(mktemp)

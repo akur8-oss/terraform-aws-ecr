@@ -30,6 +30,7 @@ resource "null_resource" "replicate_lifecycle_policy" {
       CURRENT_REGION = data.aws_region.current.name
       REPOSITORY     = var.name
       REGION         = var.replicated_region[count.index]
+      ROLE_TO_ASSUME = var.role_to_assume
     }
   }
 
@@ -59,6 +60,7 @@ resource "null_resource" "replicate_repository_policy" {
       CURRENT_REGION = data.aws_region.current.name
       REPOSITORY     = var.name
       REGION         = var.replicated_region[count.index]
+      ROLE_TO_ASSUME = var.role_to_assume
     }
   }
 

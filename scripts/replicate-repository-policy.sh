@@ -2,6 +2,15 @@
 
 repository_policy=$(mktemp)
 
+if [[ -n "${ROLE_TO_ASSUME}" ]]; then
+  export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+  $(aws sts assume-role \
+  --role-arn "${ROLE_TO_ASSUME}" \
+  --role-session-name "terraform-aws-ecr" \
+  --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+  --output text))
+fi
+
 printf "%s/%s - Retrieve repository policy from source repository.\n" "${REPOSITORY}" "${CURRENT_REGION}"
 aws ecr \
   get-repository-policy \

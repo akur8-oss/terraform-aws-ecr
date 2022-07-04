@@ -54,6 +54,7 @@ module "ecr" {
 | <a name="input_lifecycle_policy"></a> [lifecycle_policy](#input_lifecycle_policy) | Policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs. | `string` | `""` | no |
 | <a name="input_replicated_region"></a> [replicated_region](#input_replicated_region) | List of region in wich the repository is replicated. | `list(string)` | `[]` | no |
 | <a name="input_repository_policy"></a> [repository_policy](#input_repository_policy) | Policy document. This is a JSON formatted string. For more information about building IAM policy documents with Terraform, see the [AWS IAM Policy Document Guide](https://learn.hashicorp.com/terraform/aws/iam-policy). | `string` | `""` | no |
+| <a name="input_role_to_assume"></a> [role_to_assume](#input_role_to_assume) | The ARN of the role to assume when replicating repositories. | `string` | `null` | no |
 | <a name="input_scan_on_push"></a> [scan_on_push](#input_scan_on_push) | Indicates whether images are scanned after being pushed to the repository. | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input_tags) | map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | `{}` | no |
 

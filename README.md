@@ -29,8 +29,8 @@ module "ecr" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider_aws) | 3.76.1 |
-| <a name="provider_null"></a> [null](#provider_null) | 3.1.1 |
+| <a name="provider_aws"></a> [aws](#provider_aws) | ~> 3.0 |
+| <a name="provider_null"></a> [null](#provider_null) | ~> 3.1.0 |
 
 ## Resources
 

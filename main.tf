@@ -21,7 +21,7 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
 }
 
 resource "null_resource" "replicate_lifecycle_policy" {
-  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replication_region) : toset([])
+  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replicated_region) : toset([])
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-lifecycle-policy.sh"

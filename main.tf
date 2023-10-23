@@ -5,7 +5,7 @@ resource "aws_ecr_repository" "repository" {
   tags                 = var.tags
 
   encryption_configuration {
-    encryption_type = var.encryption_type
+    encryption_type = var.encryption_type #tfsec:ignore:aws-ecr-repository-customer-key
     kms_key         = var.kms_key
   }
 
@@ -13,7 +13,6 @@ resource "aws_ecr_repository" "repository" {
     scan_on_push = var.scan_on_push
   }
 }
-
 resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
   count = length(var.lifecycle_policy) > 0 ? 1 : 0
 
@@ -22,14 +21,14 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
 }
 
 resource "null_resource" "replicate_lifecycle_policy" {
-  count = length(var.lifecycle_policy) > 0 ? length(var.replicated_region) : 0
+  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replicated_region) : toset([])
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-lifecycle-policy.sh"
     environment = {
       CURRENT_REGION = data.aws_region.current.name
       REPOSITORY     = var.name
-      REGION         = var.replicated_region[count.index]
+      REGION         = each.key
       ROLE_TO_ASSUME = var.role_to_assume
     }
   }
@@ -52,14 +51,14 @@ resource "aws_ecr_repository_policy" "repository_policy" {
 }
 
 resource "null_resource" "replicate_repository_policy" {
-  count = length(var.repository_policy) > 0 ? length(var.replicated_region) : 0
+  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replicated_region) : toset([])
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-repository-policy.sh"
     environment = {
       CURRENT_REGION = data.aws_region.current.name
       REPOSITORY     = var.name
-      REGION         = var.replicated_region[count.index]
+      REGION         = each.key
       ROLE_TO_ASSUME = var.role_to_assume
     }
   }

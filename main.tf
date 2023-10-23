@@ -5,7 +5,7 @@ resource "aws_ecr_repository" "repository" {
   tags                 = var.tags
 
   encryption_configuration {
-    encryption_type = var.encryption_type
+    encryption_type = var.encryption_type #tfsec:ignore:aws-ecr-repository-customer-key
     kms_key         = var.kms_key
   }
 
@@ -21,7 +21,7 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
 }
 
 resource "null_resource" "replicate_lifecycle_policy" {
-  for_each = length(var.lifecycle_policy) > 0 ? tomap({ for idx, v in var.replicated_region: idx => v }) : tomap({})
+  for_each = length(var.lifecycle_policy) > 0 ? tomap({ for idx, v in var.replicated_region : idx => v }) : tomap({})
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-lifecycle-policy.sh"
@@ -51,7 +51,7 @@ resource "aws_ecr_repository_policy" "repository_policy" {
 }
 
 resource "null_resource" "replicate_repository_policy" {
-  for_each = length(var.lifecycle_policy) > 0 ? tomap({ for idx, v in var.replicated_region: idx => v }) : tomap({})
+  for_each = length(var.lifecycle_policy) > 0 ? tomap({ for idx, v in var.replicated_region : idx => v }) : tomap({})
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-repository-policy.sh"

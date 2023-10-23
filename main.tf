@@ -21,7 +21,7 @@ resource "aws_ecr_lifecycle_policy" "lifecycle_policy" {
 }
 
 resource "null_resource" "replicate_lifecycle_policy" {
-  for_each = length(var.lifecycle_policy) > 0 ? tolist(var.replication_region) : tolist([])
+  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replication_region) : toset([])
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-lifecycle-policy.sh"
@@ -51,7 +51,7 @@ resource "aws_ecr_repository_policy" "repository_policy" {
 }
 
 resource "null_resource" "replicate_repository_policy" {
-  for_each = length(var.lifecycle_policy) > 0 ? tolist(var.replicated_region) : tolist([])
+  for_each = length(var.lifecycle_policy) > 0 ? toset(var.replicated_region) : toset([])
 
   provisioner "local-exec" {
     command = "${path.module}/scripts/replicate-repository-policy.sh"
